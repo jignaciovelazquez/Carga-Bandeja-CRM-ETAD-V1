@@ -77,91 +77,126 @@ def consultaIdEtad(id: str):
 
     wait.until(EC.element_to_be_clickable(
         (By.XPATH, '//*[@id="ofs-main"]/div[1]//header/div[4]/div'))).click()
+    time.sleep(1)
+
     driver.find_element(
         by="xpath", value='//*[@id="search-bar-container"]/div[2]/div/div[1]/input').send_keys(id)
     time.sleep(1)
-    wait.until(EC.element_to_be_clickable(
-        (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[1]/div[2]/div[2]')))
+    #wait.until(EC.element_to_be_clickable(
+    #    (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[1]/div[2]/div[2]')))
 
-    # --------------------------- Segun tipo de gestion selecciona 1, 2 o 3ra opcion en ETAD --------------------------
-    tipoGestionETAD = driver.find_element(
-        by="xpath", value='/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[1]/div[2]/div[2]').text
-    if ("PROVISORIO" in tipoGestionETAD) or ("REPARACIONES" in tipoGestionETAD):
+    print("ID funcion",id)
+
+# ********************************************************************************************
+
+    Gestiones = len(driver.find_elements(
+        by="xpath", value='/html/body/div[17]/div[2]//div/div[4]/div'))
+    print("Cantidad de Gestiones",Gestiones)
+
+# **********************************************************************************************
+    if Gestiones > 2:
+        # --------------------------- Segun tipo de gestion selecciona 1, 2 o 3ra opcion en ETAD --------------------------
         tipoGestionETAD = driver.find_element(
-            by="xpath", value='/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[2]/div[2]/div[2]').text
+            by="xpath", value='/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[1]/div[2]/div[2]').text
         if ("PROVISORIO" in tipoGestionETAD) or ("REPARACIONES" in tipoGestionETAD):
-            wait.until(EC.element_to_be_clickable(
-                (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[3]/div[2]/div[2]'))).click()
+            tipoGestionETAD = driver.find_element(
+                by="xpath", value='/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[2]/div[2]/div[2]').text
+            if ("PROVISORIO" in tipoGestionETAD) or ("REPARACIONES" in tipoGestionETAD):
+                wait.until(EC.element_to_be_clickable(
+                    (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[3]/div[2]/div[2]'))).click()
+            else:
+                wait.until(EC.element_to_be_clickable(
+                    (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[2]/div[2]/div[2]'))).click()
         else:
             wait.until(EC.element_to_be_clickable(
-                (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[2]/div[2]/div[2]'))).click()
-    else:
+                (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[1]/div[2]/div[2]'))).click()
+        # ----------------------------------------------------------------------------------------------------------------------
+
+        # ------------------------------------- Cuerpo de la Gestion --------------------------------------------
         wait.until(EC.element_to_be_clickable(
-            (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[1]/div[2]/div[2]'))).click()
-    # ----------------------------------------------------------------------------------------------------------------------
+            (By.XPATH, '//*[@id="context-layout"]/div/div/div/div[2]/div/div[1]/header/span')))
+        time.sleep(2)
 
-    # ------------------------------------- Cuerpo de la Gestion --------------------------------------------
-    wait.until(EC.element_to_be_clickable(
-        (By.XPATH, '//*[@id="context-layout"]/div/div/div/div[2]/div/div[1]/header/span')))
-    time.sleep(2)
+        if (len(driver.find_elements(by="id", value='id_index_4')) != 0):
+            contratista = driver.find_element(
+                by="xpath", value='//*[@id="id_index_4"]').text
+        else:
+            contratista = driver.find_element(
+                by="xpath", value='//*[@id="id_index_3"]').text
+        #print("Contratista", contratista)
+        tipoOrden = driver.find_element(
+            by="xpath", value='//*[@id="id_index_5"]').text
+        #print("Tipo de Orden", tipoOrden)
+        estado = driver.find_element(
+            by="xpath", value='//*[@id="id_index_6"]').text
+        #print("Estado", estado)
 
-    if (len(driver.find_elements(by="id", value='id_index_4')) != 0):
-        contratista = driver.find_element(
-            by="xpath", value='//*[@id="id_index_4"]').text
+        if (len(driver.find_elements(by="id", value='id_index_70')) != 0):
+            programado = driver.find_element(
+                by="xpath", value='//*[@id="id_index_70"]').text
+        else:
+            programado = ""
+        #print("Programado", programado)
+        if (len(driver.find_elements(by="id", value='id_index_71')) != 0):
+            prograDia = driver.find_element(
+                by="xpath", value='//*[@id="id_index_71"]').text
+        else:
+            prograDia = ""
+        #print("Dia Programado ", prograDia)
+        if (len(driver.find_elements(by="id", value='id_index_72')) != 0):
+            prograHorario = driver.find_element(
+                by="xpath", value='//*[@id="id_index_72"]').text
+        else:
+            prograHorario = ""
+        #print("Hora Programado ", prograHorario)
+        if (len(driver.find_elements(by="id", value='id_index_73')) != 0):
+            prograContacto = driver.find_element(
+                by="xpath", value='//*[@id="id_index_73"]').text
+        else:
+            prograContacto = ""
+        #print("Contacto Programado ", prograContacto)
+        if (len(driver.find_elements(by="id", value='id_index_62')) != 0):
+            razonCierre = driver.find_element(
+                by="xpath", value='//*[@id="id_index_62"]').text
+        else:
+            razonCierre = ""
+        #print("Razon Cierre ", razonCierre)
+        if (len(driver.find_elements(by="id", value='id_index_55')) != 0):
+            notaEntrante = driver.find_element(
+                by="xpath", value='//*[@id="id_index_55"]').text
+        else:
+            notaEntrante = ""
+        #print("Nota Entrante ", notaEntrante)
+        if (len(driver.find_elements(by="xpath", value='//*[@id="context-layout"]/div/div/div/div[6]/div/div[3]/div[6]/div[1]/div')) != 0):
+            notaCierre = driver.find_element(
+                by="xpath", value='//*[@id="context-layout"]/div/div/div/div[6]/div/div[3]/div[6]/div[1]/div').text
+        else:
+            notaCierre = ""
+        #print("Nota Cierre ", notaCierre)
     else:
-        contratista = driver.find_element(
-            by="xpath", value='//*[@id="id_index_3"]').text
-    #print("Contratista", contratista)
-    tipoOrden = driver.find_element(
-        by="xpath", value='//*[@id="id_index_5"]').text
-    #print("Tipo de Orden", tipoOrden)
-    estado = driver.find_element(
-        by="xpath", value='//*[@id="id_index_6"]').text
-    #print("Estado", estado)
+        contratista = "No ETAD"
+        tipoOrden = "No ETAD"
+        estado = "No ETAD"
+        programado = "No ETAD"
+        prograDia = "No ETAD"
+        prograHorario = "No ETAD"
+        prograContacto = "No ETAD"
+        razonCierre = "No ETAD"
+        notaEntrante = "No ETAD"
+        notaCierre = "No ETAD"
+        wait.until(EC.element_to_be_clickable(
+            (By.XPATH, '//*[@id="search-bar-container"]/div[2]/div/div[4]'))).click()
+        time.sleep(1)
+        wait.until(EC.element_to_be_clickable(
+            (By.XPATH, '//*[@id="context-layout"]/div/div/div/div[2]/div/div[1]/header/span'))).click()
 
-    if (len(driver.find_elements(by="id", value='id_index_70')) != 0):
-        programado = driver.find_element(
-            by="xpath", value='//*[@id="id_index_70"]').text
-    else:
-        programado = ""
-    #print("Programado", programado)
-    if (len(driver.find_elements(by="id", value='id_index_71')) != 0):
-        prograDia = driver.find_element(
-            by="xpath", value='//*[@id="id_index_71"]').text
-    else:
-        prograDia = ""
-    #print("Dia Programado ", prograDia)
-    if (len(driver.find_elements(by="id", value='id_index_72')) != 0):
-        prograHorario = driver.find_element(
-            by="xpath", value='//*[@id="id_index_72"]').text
-    else:
-        prograHorario = ""
-    #print("Hora Programado ", prograHorario)
-    if (len(driver.find_elements(by="id", value='id_index_73')) != 0):
-        prograContacto = driver.find_element(
-            by="xpath", value='//*[@id="id_index_73"]').text
-    else:
-        prograContacto = ""
-    #print("Contacto Programado ", prograContacto)
-    if (len(driver.find_elements(by="id", value='id_index_62')) != 0):
-        razonCierre = driver.find_element(
-            by="xpath", value='//*[@id="id_index_62"]').text
-    else:
-        razonCierre = ""
-    #print("Razon Cierre ", razonCierre)
-    if (len(driver.find_elements(by="id", value='id_index_55')) != 0):
-        notaEntrante = driver.find_element(
-            by="xpath", value='//*[@id="id_index_55"]').text
-    else:
-        notaEntrante = ""
-    #print("Nota Entrante ", notaEntrante)
-    if (len(driver.find_elements(by="xpath", value='//*[@id="context-layout"]/div/div/div/div[6]/div/div[3]/div[6]/div[1]/div')) != 0):
-        notaCierre = driver.find_element(
-            by="xpath", value='//*[@id="context-layout"]/div/div/div/div[6]/div/div[3]/div[6]/div[1]/div').text
-    else:
-        notaCierre = ""
-    #print("Nota Cierre ", notaCierre)
     return [contratista, tipoOrden, estado, programado, prograDia, prograHorario, prograContacto, razonCierre, notaEntrante, notaCierre]
+
+
+hora_actual = datetime.datetime.now()
+hora_formateada = hora_actual.strftime('%H:%M:%S')
+fecha = datetime.datetime.now().date()
+fecha_formateada = fecha.strftime('%d-%m-%Y')
 
 
 for x in range(0, len(content)):
@@ -175,7 +210,7 @@ for x in range(0, len(content)):
                 content[y+2]+content[y+3]+content[y+4]
         # ------------ Casilla de verificacion ---------------------------
         if (columna == 0) and (campo[0] == chr(10)):
-            campo = "V"
+            campo = fecha_formateada
         # ------------ Casilla ID ---------------------------
         if (columna == 2):
             print("ID", campo)
@@ -197,7 +232,7 @@ for x in range(0, len(content)):
                 campo = "NORMALIZADO"
             if campo == "ARMADO (ORE)":
                 campo = "ARMADO"
-        # ------------ Subtipo ---------------------------
+        # ------------ Contratista ---------------------------
         if (columna == 12):
             campo = salida[0]
         # ------------ Bandeja previa y Observacion ---------------------------
@@ -219,6 +254,9 @@ for x in range(0, len(content)):
             if campo == "ANALISIS DE FAC...":
                 campo = "ANALISIS DE FACTIBILIDAD"
             vector.append(campo)
+            if campo == "EN CERTIFICACION":
+                obs = obs.replace('=""', '')
+            #print("Observacion", obs)
             campo = obs
         # ------------ inserta columna Obs Anterior ---------------------------
         if (columna == 14):
@@ -245,6 +283,7 @@ for x in range(0, len(content)):
             campo = " "
 
         vector.append(campo)
+        #print("Campo",campo)
         columna += 1
         if columna == 17:
             columna = 0
@@ -288,7 +327,7 @@ for x in range(0, len(content2)):
                 content2[y+2]+content2[y+3]+content2[y+4]
         # ------------ Casilla de verificacion ---------------------------
         if (columna == 0) and (campo[0] == chr(10)):
-            campo = "V"
+            campo = fecha_formateada
         # ------------ separar altura y localidad ---------------------------
         if (columna == 6) and (campo[0] == "<"):
             campo = campo[52:]
@@ -344,7 +383,7 @@ for x in range(0, len(content2)):
         if (columna == 14):
             vector.append(" ")
             vector.append(" ")
-
+        #print("campo", campo, "columna", columna)
         columna += 1
         if columna == 15:
             columna = 0
@@ -361,10 +400,6 @@ for x in range(0, len(content2)):
 
 # ------------- filas en cierre + filas en reconversion + vector de metaDatos -----------------------
 filasTotal = filas1+filas2+1
-
-hora_actual = datetime.datetime.now()
-hora_formateada = hora_actual.strftime('%H:%M:%S')
-
 # ------------------------------- Bandeja de Pendiente de Relevamiento ----------
 driver.get(
     "http://crm.telecentro.local/Edificio/Gt_Edificio/BandejaEntradaDeRelevamiento.aspx?TituloPantalla=Pendiente%20De%20Relevamiento&EstadoGestionId=4&TipoGestionId=3&TipoGestion=OPERACIONES%20DE%20RED%20-%20PENDIENTE%20DE%20RELEVAMIENTO")
@@ -428,56 +463,6 @@ hoja.update([df.columns.values.tolist()] + df.values.tolist())
 
 
 """
-
-# ---------------------------------------------------------------------------------
-
-
-driver.find_element(
-    by="xpath", value='//*[@id="manage-content"]/div/div[2]/div[2]/div/div[2]/div[3]/div[2]/div[2]/div[1]/div[1]/button[1]').click()
-
-time.sleep(1)
-
-driver.find_element(
-    by="xpath", value='//*[@id="manage-content"]/div/div[2]/div[2]/div/div[2]/div[3]/div[2]/div[2]/div[1]/div[2]/div[1]/div[1]').click()
-
-
-# ----------------------------------- Cuadro Emergente -------------------------------------------------------
-
-time.sleep(1)
-
-driver.find_element(
-    by="xpath", value='//button[@title["Vista"]]/span[3]').click()
-
-time.sleep(1)
-
-Select(driver.find_element(by="xpath",
-       value='/html/body/div[25]/div/div/div/div[1]/form/div/select[1]')).select_by_value("11")
-
-
-time.sleep(1)
-
-Select(driver.find_element(by="xpath",
-       value='/html/body/div[25]/div/div/div/div[1]/form/div/select[2]')).select_by_value("complete")
-
-
-time.sleep(1)
-
-driver.find_element(
-    by="xpath", value='/html/body/div[25]/div/div/div/div[1]/form/div/label[15]/input').click()
-
-time.sleep(1)
-
-driver.find_element(
-    by="xpath", value='/html/body/div[25]/div/div/div/div[2]//button[@title["Aplicar"]]/span[2]').click()
-
-
-#driver.find_element(by="xpath", value='//*[@id="elId231"]/div[1]/div[3]/controls:toolbar-items:toolbar-switcher/controls:app-menu-button/button').click()
-
-#driver.find_element(by="xpath", value='//*[@id="elId303"]').click()
-
-
-# -------------------------------------------------------
-
 
 
 
