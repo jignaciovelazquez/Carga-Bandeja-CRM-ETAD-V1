@@ -81,17 +81,16 @@ def consultaIdEtad(id: str):
 
     driver.find_element(
         by="xpath", value='//*[@id="search-bar-container"]/div[2]/div/div[1]/input').send_keys(id)
-    time.sleep(1)
-    #wait.until(EC.element_to_be_clickable(
+    time.sleep(2)
+    # wait.until(EC.element_to_be_clickable(
     #    (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[1]/div[2]/div[2]')))
 
-    print("ID funcion",id)
 
 # ********************************************************************************************
 
     Gestiones = len(driver.find_elements(
         by="xpath", value='/html/body/div[17]/div[2]//div/div[4]/div'))
-    print("Cantidad de Gestiones",Gestiones)
+    print("Cantidad de Gestiones", Gestiones)
 
 # **********************************************************************************************
     if Gestiones > 2:
@@ -115,8 +114,10 @@ def consultaIdEtad(id: str):
         # ------------------------------------- Cuerpo de la Gestion --------------------------------------------
         wait.until(EC.element_to_be_clickable(
             (By.XPATH, '//*[@id="context-layout"]/div/div/div/div[2]/div/div[1]/header/span')))
-        time.sleep(2)
-
+        #print("ID funcion", id)
+        time.sleep(1)
+        #print("Existe Contratista", len(driver.find_elements(
+        #    by="xpath", value='/html/body/div[14]/div[1]/main/div/div[2]/div[2]/div/div[2]/form/div/div[6]/div[2]/div/div/div/div/div/div/div[2]/div/div[2]/div[2]/div[1]/div/div')))
         if (len(driver.find_elements(by="id", value='id_index_4')) != 0):
             contratista = driver.find_element(
                 by="xpath", value='//*[@id="id_index_4"]').text
@@ -174,16 +175,16 @@ def consultaIdEtad(id: str):
             notaCierre = ""
         #print("Nota Cierre ", notaCierre)
     else:
-        contratista = "No ETAD"
-        tipoOrden = "No ETAD"
-        estado = "No ETAD"
-        programado = "No ETAD"
-        prograDia = "No ETAD"
-        prograHorario = "No ETAD"
-        prograContacto = "No ETAD"
-        razonCierre = "No ETAD"
-        notaEntrante = "No ETAD"
-        notaCierre = "No ETAD"
+        contratista = "-"
+        tipoOrden = "-"
+        estado = "-"
+        programado = "-"
+        prograDia = "-"
+        prograHorario = "-"
+        prograContacto = "-"
+        razonCierre = "-"
+        notaEntrante = "-"
+        notaCierre = "-"
         wait.until(EC.element_to_be_clickable(
             (By.XPATH, '//*[@id="search-bar-container"]/div[2]/div/div[4]'))).click()
         time.sleep(1)
@@ -283,7 +284,7 @@ for x in range(0, len(content)):
             campo = " "
 
         vector.append(campo)
-        #print("Campo",campo)
+        # print("Campo",campo)
         columna += 1
         if columna == 17:
             columna = 0
