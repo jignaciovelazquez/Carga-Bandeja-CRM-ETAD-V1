@@ -18,6 +18,7 @@ import re
 import datetime
 import time
 
+ID = ""
 columna = 0
 campo = ""
 cierre = ""
@@ -75,6 +76,7 @@ wait.until(EC.element_to_be_clickable(
 
 def consultaIdEtad(id: str):
 
+    print("id desde la funcion", id)
     wait.until(EC.element_to_be_clickable(
         (By.XPATH, '//*[@id="ofs-main"]/div[1]//header/div[4]/div'))).click()
     time.sleep(1)
@@ -110,20 +112,23 @@ def consultaIdEtad(id: str):
             wait.until(EC.element_to_be_clickable(
                 (By.XPATH, '/html/body/div[17]/div[2]//div/div[4]//div[2]/div/div[1]/div[1]/div[2]/div[2]'))).click()
         # ----------------------------------------------------------------------------------------------------------------------
+        
 
         # ------------------------------------- Cuerpo de la Gestion --------------------------------------------
         wait.until(EC.element_to_be_clickable(
             (By.XPATH, '//*[@id="context-layout"]/div/div/div/div[2]/div/div[1]/header/span')))
         #print("ID funcion", id)
-        time.sleep(1)
-        #print("Existe Contratista", len(driver.find_elements(
+        time.sleep(2)
+        # print("Existe Contratista", len(driver.find_elements(
         #    by="xpath", value='/html/body/div[14]/div[1]/main/div/div[2]/div[2]/div/div[2]/form/div/div[6]/div[2]/div/div/div/div/div/div/div[2]/div/div[2]/div[2]/div[1]/div/div')))
         if (len(driver.find_elements(by="id", value='id_index_4')) != 0):
             contratista = driver.find_element(
                 by="xpath", value='//*[@id="id_index_4"]').text
         else:
-            contratista = driver.find_element(
-                by="xpath", value='//*[@id="id_index_3"]').text
+            if (len(driver.find_elements(by="id", value='id_index_3')) != 0):
+                contratista = driver.find_element(
+                    by="xpath", value='//*[@id="id_index_3"]').text
+            else: contratista = "-"
         #print("Contratista", contratista)
         tipoOrden = driver.find_element(
             by="xpath", value='//*[@id="id_index_5"]').text
@@ -131,7 +136,8 @@ def consultaIdEtad(id: str):
         estado = driver.find_element(
             by="xpath", value='//*[@id="id_index_6"]').text
         #print("Estado", estado)
-
+        time.sleep(2)
+        print("Cargar el Cuerpo")
         if (len(driver.find_elements(by="id", value='id_index_70')) != 0):
             programado = driver.find_element(
                 by="xpath", value='//*[@id="id_index_70"]').text
@@ -188,8 +194,13 @@ def consultaIdEtad(id: str):
         wait.until(EC.element_to_be_clickable(
             (By.XPATH, '//*[@id="search-bar-container"]/div[2]/div/div[4]'))).click()
         time.sleep(1)
+
         wait.until(EC.element_to_be_clickable(
-            (By.XPATH, '//*[@id="context-layout"]/div/div/div/div[2]/div/div[1]/header/span'))).click()
+            (By.XPATH, '/html/body/div[14]/div[1]//header/div[2]/div'))).click()
+        #    (By.XPATH, '//*[@id="context-layout"]/div/div/div/div[2]/div/div[1]/header/span'))).click()
+        print("Gestiones solo 2")
+
+    print("Salio de ETAD")
 
     return [contratista, tipoOrden, estado, programado, prograDia, prograHorario, prograContacto, razonCierre, notaEntrante, notaCierre]
 
@@ -214,8 +225,16 @@ for x in range(0, len(content)):
             campo = fecha_formateada
         # ------------ Casilla ID ---------------------------
         if (columna == 2):
-            print("ID", campo)
-            salida = consultaIdEtad(campo)
+            ID = campo
+            print("ID", ID)
+        # ------- Si la Gestion es de Barrio (prioridad 4) no se busca en ETAD ---------------------------
+        if (columna == 5):
+            print("Prioridad", campo)
+            if campo != "4":
+                salida = consultaIdEtad(ID)
+            else:
+                print("Gestion de Barrio, ID", ID)
+                salida = ["*", "*", "*", "*", "*", "*", "*", "*", "*", "*"]
 
         # ------------ separar altura y localidad ---------------------------
         if (columna == 6) and (campo[0] == "<"):
@@ -234,7 +253,7 @@ for x in range(0, len(content)):
             if campo == "ARMADO (ORE)":
                 campo = "ARMADO"
         # ------------ Contratista ---------------------------
-        if (columna == 12):
+        if (columna == 12) and (salida[0] != "*"):
             campo = salida[0]
         # ------------ Bandeja previa y Observacion ---------------------------
         if (columna == 13) and (campo[0] == "<"):
@@ -310,6 +329,8 @@ wait.until(EC.presence_of_element_located(
     (By.XPATH, '/html/body/form/div[4]/div[4]/table[1]/tbody/tr[10]/td/table/tbody/tr/td/div/div/div/table')))
 time.sleep(1)
 
+print("ID Reconversion", ID)
+
 tabla2 = driver.find_element(
     by="xpath", value='/html/body/form/div[4]/div[4]/table[1]/tbody/tr[10]/td/table/tbody/tr/td/div/div/div/table')
 filas2 = len(driver.find_elements(
@@ -369,7 +390,7 @@ for x in range(0, len(content2)):
             vector.append(campo)
             campo = obs
         # ------------ Observacion Anterior---------------------------
-        if (columna == 13):
+        if (columna == 13) and (campo != "&nbsp;"):
             campo = campo[7:]
             comilla = campo.index('"')
             campo = campo[:comilla]
